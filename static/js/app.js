@@ -43,12 +43,12 @@ var drawChart = function(x_data, y_data, hoverText, metadata) {   //chart take i
 
 
 };
+// Create Function populateDropdown that append names to dropdown box.
+var populateDropdown = function(names) {     //function take in one variable "names".
 
-var populateDropdown = function(names) {
-
-    var selectTag = d3.select("#selDataset");
-    var options = selectTag.selectAll('option').data(names);
-
+    var selectTag = d3.select("#selDataset");      //select id selDataset
+    var options = selectTag.selectAll('option').data(names);      //select all options and upload data in "names"
+    //enter and append each item from names with options id = name
     options.enter()
         .append('option')
         .attr('value', function(d) {
@@ -59,42 +59,42 @@ var populateDropdown = function(names) {
         });
 
 };
+// Create Function optionChanged for event handler of dropdown box.
+var optionChanged = function(newValue) {                   //takes in newValue
 
-var optionChanged = function(newValue) {
+    d3.json("data/samples.json").then(function(data) {     //read json data
 
-    d3.json("data/samples.json").then(function(data) {
+    sample_new = data["samples"].filter(function(sample) {     //sample_new is created as placeholder
 
-    sample_new = data["samples"].filter(function(sample) {
-
-        return sample.id == newValue;
-
-    });
-    
-    metadata_new = data["metadata"].filter(function(metadata) {
-
-        return metadata.id == newValue;
+        return sample.id == newValue;                       //newValue is now the id key in sample.
 
     });
     
+    metadata_new = data["metadata"].filter(function(metadata) {   //metadata_new is created as placeholder
+
+        return metadata.id == newValue;                    //newValue is now the id key in metadata.
+
+    });
     
-    x_data = sample_new[0]["otu_ids"];
-    y_data = sample_new[0]["sample_values"];
-    hoverText = sample_new[0]["otu_labels"];
+    
+    x_data = sample_new[0]["otu_ids"];                    // x_data is updated
+    y_data = sample_new[0]["sample_values"];             // y_data is updated
+    hoverText = sample_new[0]["otu_labels"];             // hoverText is updated
     
     console.log(x_data);
     console.log(y_data);
     console.log(hoverText);
     
-    drawChart(x_data, y_data, hoverText, metadata_new[0]);
+    drawChart(x_data, y_data, hoverText, metadata_new[0]);     //perform drawChart function with updated var.
     });
 };
-
-d3.json("data/samples.json").then(function(data) {
+//Initial Display before any event.
+d3.json("data/samples.json").then(function(data) {     //read json file
 
     //Populate dropdown with names
-    populateDropdown(data["names"]);
+    populateDropdown(data["names"]);                  //populate dropdown
 
-    //Populate the page with the first value
+    //Populate the page with the first value, four variables are defined.
     x_data = data["samples"][0]["otu_ids"];
     y_data = data["samples"][0]["sample_values"];
     hoverText = data["samples"][0]["otu_labels"];
